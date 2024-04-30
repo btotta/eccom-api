@@ -1,0 +1,44 @@
+definitions:
+  dtos.Hello:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      description: Hello
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Hello World
+          schema:
+            type: string
+      summary: Hello
+      tags:
+      - Hello
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Health
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.Hello'
+      summary: Health
+      tags:
+      - Hello
+swagger: "2.0"

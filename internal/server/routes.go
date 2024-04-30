@@ -7,6 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	docs "eccom-api/docs"
 )
 
 var (
@@ -18,12 +22,19 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 	r.Use(middleware.CorsMiddleware())
 
+	docs.SwaggerInfo.BasePath = "/"
+	r.GET("/swagger-ui/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
+	r.OPTIONS("/*any", func(c *gin.Context) {
+		c.AbortWithStatus(http.StatusOK)
+	})
+
 	s.startRepositorys()
 	s.startHandlers()
 
 	hello := r.Group("")
 	{
-		hello.GET("/hello", helloHandler.Hello)
+		hello.GET("/", helloHandler.Hello)
 		hello.GET("/health", helloHandler.Health)
 	}
 
