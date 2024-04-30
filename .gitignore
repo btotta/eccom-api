@@ -27,3 +27,9 @@ tmp/
 
 # Project build
 main
+
+# Environment variables file
+.env
+
+# Main binary
+main

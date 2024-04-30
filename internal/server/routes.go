@@ -1,28 +1,43 @@
 package server
 
 import (
+	"eccom-api/internal/domain/handler"
+	"eccom-api/internal/domain/repository"
+	"eccom-api/internal/pkg/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
+var (
+	helloRepository repository.HelloRepository
+	helloHandler    handler.HelloHandler
+)
+
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
+	r.Use(middleware.CorsMiddleware())
 
-	r.GET("/", s.HelloWorldHandler)
+	s.startRepositorys()
+	s.startHandlers()
 
-	r.GET("/health", s.healthHandler)
+	hello := r.Group("")
+	{
+		hello.GET("/hello", helloHandler.Hello)
+		hello.GET("/health", helloHandler.Health)
+	}
 
 	return r
 }
 
-func (s *Server) HelloWorldHandler(c *gin.Context) {
-	resp := make(map[string]string)
-	resp["message"] = "Hello World"
-
-	c.JSON(http.StatusOK, resp)
+func (s *Server) startRepositorys() {
+	if helloRepository == nil {
+		helloRepository = repository.NewHelloRepository(s.db.GetDB())
+	}
 }
 
-func (s *Server) healthHandler(c *gin.Context) {
-	c.JSON(http.StatusOK, s.db.Health())
+func (s *Server) startHandlers() {
+	if helloHandler == nil {
+		helloHandler = handler.NewHelloHandler(helloRepository)
+	}
 }
