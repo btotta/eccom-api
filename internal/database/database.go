@@ -58,6 +58,8 @@ func New() Service {
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
+	Migration(db)
+
 	dbInstance = &service{db: db}
 
 	return dbInstance

@@ -14,8 +14,13 @@ import (
 )
 
 var (
+	// Repository
 	helloRepository repository.HelloRepository
-	helloHandler    handler.HelloHandler
+	userRepository  repository.UserRepository
+
+	// Handler
+	helloHandler handler.HelloHandler
+	userHandler  handler.UserHandler
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
@@ -23,7 +28,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Use(middleware.CorsMiddleware())
 
 	docs.SwaggerInfo.BasePath = "/"
-	r.GET("/swagger-ui/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 
 	r.OPTIONS("/*any", func(c *gin.Context) {
 		c.AbortWithStatus(http.StatusOK)
@@ -38,6 +43,18 @@ func (s *Server) RegisterRoutes() http.Handler {
 		hello.GET("/health", helloHandler.Health)
 	}
 
+	user := r.Group("/user")
+	{
+		user.POST("", userHandler.CreateUser)
+		user.DELETE("/:id", middleware.AuthMiddleware(), userHandler.DeleteUser)
+		user.GET("", middleware.AuthMiddleware(), userHandler.GetUser)
+		//user.PUT("", middleware.AuthMiddleware(), userHandler.UpdateUser)
+
+		user.POST("/login", userHandler.LoginUser)
+		user.POST("/logout", middleware.AuthMiddleware(), userHandler.LogoutUser)
+		user.POST("/refresh", userHandler.RefreshTokenUser)
+	}
+
 	return r
 }
 
@@ -45,10 +62,16 @@ func (s *Server) startRepositorys() {
 	if helloRepository == nil {
 		helloRepository = repository.NewHelloRepository(s.db.GetDB())
 	}
+	if userRepository == nil {
+		userRepository = repository.NewUserRepository(s.db.GetDB())
+	}
 }
 
 func (s *Server) startHandlers() {
 	if helloHandler == nil {
 		helloHandler = handler.NewHelloHandler(helloRepository)
+	}
+	if userHandler == nil {
+		userHandler = handler.NewUserHandler(userRepository)
 	}
 }

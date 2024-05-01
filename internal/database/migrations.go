@@ -1,0 +1,13 @@
+package database
+
+import (
+	"eccom-api/internal/domain/entity"
+
+	"gorm.io/gorm"
+)
+
+func Migration(db *gorm.DB) {
+
+	db.AutoMigrate(&entity.User{})
+
+}

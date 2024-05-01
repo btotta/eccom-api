@@ -1,4 +1,37 @@
 definitions:
+  common_error.ErrorResponse:
+    properties:
+      error:
+        type: string
+      message:
+        type: string
+      path:
+        type: string
+      status:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+  dtos.CreateUserDTO:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      name:
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        maxLength: 100
+        minLength: 6
+        type: string
+    required:
+    - confirm_password
+    - email
+    - name
+    - password
+    type: object
   dtos.Hello:
     properties:
       message:
@@ -6,6 +39,38 @@ definitions:
       status:
         type: string
       timestamp:
+        type: string
+    type: object
+  dtos.UserAuthDTO:
+    properties:
+      email:
+        type: string
+      password:
+        maxLength: 100
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dtos.UserAuthRefreshDTO:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  dtos.UserResponseDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+      status:
         type: string
     type: object
 info:
@@ -41,4 +106,147 @@ paths:
       summary: Health
       tags:
       - Hello
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Get a user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get User
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: User object that needs to be created
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateUserDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create User
+      tags:
+      - User
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Delete User
+      tags:
+      - User
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user
+      parameters:
+      - description: User credentials to login
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserAuthDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Login User
+      tags:
+      - User
+  /user/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout a user
+      parameters:
+      - description: Refresh token to logout
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserAuthRefreshDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Logout User
+      tags:
+      - User
+  /user/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Refresh a token
+      parameters:
+      - description: ' Refresh token to refresh'
+        in: body
+        name: refresh_token
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UserAuthRefreshDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Refresh Token
+      tags:
+      - User
 swagger: "2.0"
