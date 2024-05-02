@@ -38,6 +38,7 @@ clean:
 # Live Reload
 watch:
 	@if command -v air > /dev/null; then \
+		swag init -g internal/server/routes.go -o docs; \
 	    air; \
 	    echo "Watching...";\
 	else \

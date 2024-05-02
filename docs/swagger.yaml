@@ -12,6 +12,66 @@ definitions:
       timestamp:
         type: string
     type: object
+  dtos.CityResponseDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      state_id:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  dtos.CreateCityDTO:
+    properties:
+      name:
+        type: string
+      state_id:
+        type: integer
+    required:
+    - name
+    - state_id
+    type: object
+  dtos.CreateNeighborhoodDTO:
+    properties:
+      city_id:
+        type: integer
+      name:
+        type: string
+    required:
+    - city_id
+    - name
+    type: object
+  dtos.CreatePlaceDTO:
+    properties:
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      neighborhood_id:
+        type: integer
+      postal_code:
+        type: string
+    required:
+    - name
+    - neighborhood_id
+    - postal_code
+    type: object
+  dtos.CreateStateDTO:
+    properties:
+      name:
+        type: string
+      uf:
+        type: string
+    required:
+    - name
+    - uf
+    type: object
   dtos.CreateUserDTO:
     properties:
       confirm_password:
@@ -39,6 +99,159 @@ definitions:
       status:
         type: string
       timestamp:
+        type: string
+    type: object
+  dtos.NeighborhoodResponseDTO:
+    properties:
+      city_id:
+        type: integer
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dtos.PageCityResponseDTO:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/dtos.CityResponseDTO'
+        type: array
+      empty:
+        type: boolean
+      first:
+        type: boolean
+      last:
+        type: boolean
+      number:
+        type: integer
+      numberOfElements:
+        type: integer
+      pageable:
+        $ref: '#/definitions/repository.PageableInfo'
+      size:
+        type: integer
+      sort:
+        $ref: '#/definitions/repository.SortInfo'
+      totalElements:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dtos.PageNeighborhoodResponseDTO:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/dtos.NeighborhoodResponseDTO'
+        type: array
+      empty:
+        type: boolean
+      first:
+        type: boolean
+      last:
+        type: boolean
+      number:
+        type: integer
+      numberOfElements:
+        type: integer
+      pageable:
+        $ref: '#/definitions/repository.PageableInfo'
+      size:
+        type: integer
+      sort:
+        $ref: '#/definitions/repository.SortInfo'
+      totalElements:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dtos.PagePlaceResponseDTO:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/dtos.PlaceResponseDTO'
+        type: array
+      empty:
+        type: boolean
+      first:
+        type: boolean
+      last:
+        type: boolean
+      number:
+        type: integer
+      numberOfElements:
+        type: integer
+      pageable:
+        $ref: '#/definitions/repository.PageableInfo'
+      size:
+        type: integer
+      sort:
+        $ref: '#/definitions/repository.SortInfo'
+      totalElements:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dtos.PageStateResponseDTO:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/dtos.StateResponseDTO'
+        type: array
+      empty:
+        type: boolean
+      first:
+        type: boolean
+      last:
+        type: boolean
+      number:
+        type: integer
+      numberOfElements:
+        type: integer
+      pageable:
+        $ref: '#/definitions/repository.PageableInfo'
+      size:
+        type: integer
+      sort:
+        $ref: '#/definitions/repository.SortInfo'
+      totalElements:
+        type: integer
+      totalPages:
+        type: integer
+    type: object
+  dtos.PlaceResponseDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      latitude:
+        type: number
+      longitude:
+        type: number
+      name:
+        type: string
+      neighborhood_id:
+        type: integer
+      postal_code:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  dtos.StateResponseDTO:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      uf:
+        type: string
+      updated_at:
         type: string
     type: object
   dtos.UserAuthDTO:
@@ -73,6 +286,30 @@ definitions:
       status:
         type: string
     type: object
+  repository.PageableInfo:
+    properties:
+      offset:
+        type: integer
+      pageNumber:
+        type: integer
+      pageSize:
+        type: integer
+      paged:
+        type: boolean
+      sort:
+        $ref: '#/definitions/repository.SortInfo'
+      unpaged:
+        type: boolean
+    type: object
+  repository.SortInfo:
+    properties:
+      empty:
+        type: boolean
+      sorted:
+        type: boolean
+      unsorted:
+        type: boolean
+    type: object
 info:
   contact: {}
 paths:
@@ -91,6 +328,398 @@ paths:
       summary: Hello
       tags:
       - Hello
+  /address/city:
+    post:
+      consumes:
+      - application/json
+      description: Create a city
+      parameters:
+      - description: City
+        in: body
+        name: city
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateCityDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.CityResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create a city
+      tags:
+      - Address
+  /address/city/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a city
+      parameters:
+      - description: City ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CityResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a city
+      tags:
+      - Address
+  /address/city/paginated:
+    get:
+      consumes:
+      - application/json
+      description: Get a page of cities
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Size
+        in: query
+        name: size
+        type: integer
+      - collectionFormat: multi
+        description: Sort
+        in: query
+        items:
+          type: string
+        name: sort
+        type: array
+      - description: State ID
+        in: query
+        name: state_id
+        type: integer
+      - description: Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PageCityResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a page of cities
+      tags:
+      - Address
+  /address/neighborhood:
+    post:
+      consumes:
+      - application/json
+      description: Create a neighborhood
+      parameters:
+      - description: Neighborhood
+        in: body
+        name: neighborhood
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateNeighborhoodDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.NeighborhoodResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create a neighborhood
+      tags:
+      - Address
+  /address/neighborhood/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a neighborhood
+      parameters:
+      - description: Neighborhood ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.NeighborhoodResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a neighborhood
+      tags:
+      - Address
+  /address/neighborhood/paginated:
+    get:
+      consumes:
+      - application/json
+      description: Get a page of neighborhoods
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Size
+        in: query
+        name: size
+        type: integer
+      - collectionFormat: multi
+        description: Sort
+        in: query
+        items:
+          type: string
+        name: sort
+        type: array
+      - description: City ID
+        in: query
+        name: city_id
+        type: integer
+      - description: Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PageNeighborhoodResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a page of neighborhoods
+      tags:
+      - Address
+  /address/place:
+    post:
+      consumes:
+      - application/json
+      description: Create a place
+      parameters:
+      - description: Place
+        in: body
+        name: place
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreatePlaceDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.PlaceResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create a place
+      tags:
+      - Address
+  /address/place/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a place
+      parameters:
+      - description: Place ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PlaceResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a place
+      tags:
+      - Address
+  /address/place/paginated:
+    get:
+      consumes:
+      - application/json
+      description: Get a page of places
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Size
+        in: query
+        name: size
+        type: integer
+      - collectionFormat: multi
+        description: Sort
+        in: query
+        items:
+          type: string
+        name: sort
+        type: array
+      - description: Neighborhood ID
+        in: query
+        name: neighborhood_id
+        type: integer
+      - description: Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PagePlaceResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a page of places
+      tags:
+      - Address
+  /address/state:
+    post:
+      consumes:
+      - application/json
+      description: Create a state
+      parameters:
+      - description: State
+        in: body
+        name: state
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateStateDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.StateResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create a state
+      tags:
+      - Address
+  /address/state/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a state
+      parameters:
+      - description: State ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.StateResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a state
+      tags:
+      - Address
+  /address/state/paginated:
+    get:
+      consumes:
+      - application/json
+      description: Get a page of states
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: integer
+      - description: Size
+        in: query
+        name: size
+        type: integer
+      - collectionFormat: multi
+        description: Sort
+        in: query
+        items:
+          type: string
+        name: sort
+        type: array
+      - description: UF
+        in: query
+        name: uf
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PageStateResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get a page of states
+      tags:
+      - Address
   /health:
     get:
       consumes:
