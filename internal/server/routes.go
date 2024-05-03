@@ -15,14 +15,16 @@ import (
 
 var (
 	// Repository
-	helloRepository   repository.HelloRepository
-	userRepository    repository.UserRepository
-	addressRepository repository.AddressRepository
+	helloRepository       repository.HelloRepository
+	userRepository        repository.UserRepository
+	addressRepository     repository.AddressRepository
+	userAddressRepository repository.UserAddressRepository
 
 	// Handler
-	helloHandler   handler.HelloHandler
-	userHandler    handler.UserHandler
-	addressHandler handler.AddressHandler
+	helloHandler       handler.HelloHandler
+	userHandler        handler.UserHandler
+	addressHandler     handler.AddressHandler
+	userAddressHandler handler.UserAddressHandler
 )
 
 func (s *Server) registerRoutes() http.Handler {
@@ -55,6 +57,16 @@ func (s *Server) registerRoutes() http.Handler {
 		user.POST("/login", userHandler.LoginUser)
 		user.POST("/logout", middleware.AuthMiddleware(), userHandler.LogoutUser)
 		user.POST("/refresh", userHandler.RefreshTokenUser)
+
+		user_address := user.Group("/address")
+		{
+			user_address.Use(middleware.AuthMiddleware())
+
+			user_address.POST("", middleware.AuthMiddleware(), userAddressHandler.CreateUserAddress)
+			user_address.GET("/:id", middleware.AuthMiddleware(), userAddressHandler.GetUserAddress)
+			user_address.GET("/paginated", middleware.AuthMiddleware(), userAddressHandler.GetUserAddressPage)
+			user_address.DELETE("/:id", middleware.AuthMiddleware(), userAddressHandler.DeleteUserAddress)
+		}
 	}
 
 	address := r.Group("/address")
@@ -79,25 +91,15 @@ func (s *Server) registerRoutes() http.Handler {
 }
 
 func (s *Server) startRepositorys() {
-	if helloRepository == nil {
-		helloRepository = repository.NewHelloRepository(s.db.GetDB())
-	}
-	if userRepository == nil {
-		userRepository = repository.NewUserRepository(s.db.GetDB())
-	}
-	if addressRepository == nil {
-		addressRepository = repository.NewAddressRepository(s.db.GetDB())
-	}
+	helloRepository = repository.NewHelloRepository(s.db.GetDB())
+	userRepository = repository.NewUserRepository(s.db.GetDB())
+	addressRepository = repository.NewAddressRepository(s.db.GetDB())
+	userAddressRepository = repository.NewUserAddressRepository(s.db.GetDB())
 }
 
 func (s *Server) startHandlers() {
-	if helloHandler == nil {
-		helloHandler = handler.NewHelloHandler(helloRepository)
-	}
-	if userHandler == nil {
-		userHandler = handler.NewUserHandler(userRepository)
-	}
-	if addressHandler == nil {
-		addressHandler = handler.NewAddressHandler(addressRepository)
-	}
+	helloHandler = handler.NewHelloHandler(helloRepository)
+	userHandler = handler.NewUserHandler(userRepository)
+	addressHandler = handler.NewAddressHandler(addressRepository)
+	userAddressHandler = handler.NewUserAddressHandler(userAddressRepository, addressRepository, userRepository)
 }

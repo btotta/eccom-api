@@ -72,6 +72,23 @@ definitions:
     - name
     - uf
     type: object
+  dtos.CreateUserAddressDTO:
+    properties:
+      city_id:
+        type: integer
+      complemento:
+        type: string
+      logradouro:
+        type: string
+      neighborhood_id:
+        type: integer
+      numero:
+        type: string
+      place_id:
+        type: integer
+      state_id:
+        type: integer
+    type: object
   dtos.CreateUserDTO:
     properties:
       confirm_password:
@@ -254,6 +271,29 @@ definitions:
       updated_at:
         type: string
     type: object
+  dtos.UserAddressResponseDTO:
+    properties:
+      city_id:
+        type: integer
+      complemento:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      neighborhood_id:
+        type: integer
+      numero:
+        type: string
+      place_id:
+        type: integer
+      state_id:
+        type: integer
+      status:
+        $ref: '#/definitions/entity.Status'
+      updated_at:
+        type: string
+    type: object
   dtos.UserAuthDTO:
     properties:
       email:
@@ -286,6 +326,16 @@ definitions:
       status:
         type: string
     type: object
+  entity.Status:
+    enum:
+    - active
+    - inactive
+    - deleted
+    type: string
+    x-enum-varnames:
+    - Active
+    - Inactive
+    - Deleted
   repository.PageableInfo:
     properties:
       offset:
@@ -800,6 +850,133 @@ paths:
           schema:
             $ref: '#/definitions/common_error.ErrorResponse'
       summary: Delete User
+      tags:
+      - User
+  /user/address:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user address by id
+      parameters:
+      - description: User Address ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserAddressResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Delete User Address
+      tags:
+      - User
+    get:
+      consumes:
+      - application/json
+      description: Get user address by id
+      parameters:
+      - description: User Address ID
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserAddressResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get User Address
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: Create a new user address
+      parameters:
+      - description: User object that needs to be created
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateUserAddressDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dtos.UserAddressResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Create User Address
+      tags:
+      - User
+  /user/address/paginated:
+    get:
+      consumes:
+      - application/json
+      description: Get user address by page
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - collectionFormat: multi
+        description: Sort
+        in: query
+        items:
+          type: string
+        name: sort
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserAddressResponseDTO'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common_error.ErrorResponse'
+      summary: Get User Address Page
       tags:
       - User
   /user/login:

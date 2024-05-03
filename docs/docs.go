@@ -724,6 +724,197 @@ const docTemplate = `{
                 }
             }
         },
+        "/user/address": {
+            "get": {
+                "description": "Get user address by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User Address",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Address ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserAddressResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new user address",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Create User Address",
+                "parameters": [
+                    {
+                        "description": "User object that needs to be created",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dtos.CreateUserAddressDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserAddressResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete user address by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete User Address",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User Address ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserAddressResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/address/paginated": {
+            "get": {
+                "description": "Get user address by page",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Get User Address Page",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "multi",
+                        "description": "Sort",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dtos.UserAddressResponseDTO"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/common_error.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "description": "Login a user",
@@ -985,6 +1176,32 @@ const docTemplate = `{
                 },
                 "uf": {
                     "type": "string"
+                }
+            }
+        },
+        "dtos.CreateUserAddressDTO": {
+            "type": "object",
+            "properties": {
+                "city_id": {
+                    "type": "integer"
+                },
+                "complemento": {
+                    "type": "string"
+                },
+                "logradouro": {
+                    "type": "string"
+                },
+                "neighborhood_id": {
+                    "type": "integer"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "place_id": {
+                    "type": "integer"
+                },
+                "state_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1262,6 +1479,41 @@ const docTemplate = `{
                 }
             }
         },
+        "dtos.UserAddressResponseDTO": {
+            "type": "object",
+            "properties": {
+                "city_id": {
+                    "type": "integer"
+                },
+                "complemento": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "neighborhood_id": {
+                    "type": "integer"
+                },
+                "numero": {
+                    "type": "string"
+                },
+                "place_id": {
+                    "type": "integer"
+                },
+                "state_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "$ref": "#/definitions/entity.Status"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "dtos.UserAuthDTO": {
             "type": "object",
             "required": [
@@ -1309,6 +1561,19 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "entity.Status": {
+            "type": "string",
+            "enum": [
+                "active",
+                "inactive",
+                "deleted"
+            ],
+            "x-enum-varnames": [
+                "Active",
+                "Inactive",
+                "Deleted"
+            ]
         },
         "repository.PageableInfo": {
             "type": "object",

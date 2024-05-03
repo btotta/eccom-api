@@ -13,6 +13,7 @@ func Migration(db *gorm.DB) {
 		&entity.City{},
 		&entity.Neighborhood{},
 		&entity.Place{},
+		&entity.UserAddress{},
 	)
 
 }
