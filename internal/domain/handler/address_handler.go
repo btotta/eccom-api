@@ -11,29 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AddressHandler interface {
-	CreateState(c *gin.Context)
-	CreateCity(c *gin.Context)
-	CreateNeighborhood(c *gin.Context)
-	CreatePlace(c *gin.Context)
-
-	GetState(c *gin.Context)
-	GetCity(c *gin.Context)
-	GetNeighborhood(c *gin.Context)
-	GetPlace(c *gin.Context)
-
-	GetStatePage(c *gin.Context)
-	GetCityPage(c *gin.Context)
-	GetNeighborhoodPage(c *gin.Context)
-	GetPlacePage(c *gin.Context)
-}
-
-type addressHandler struct {
+type AddressHandler struct {
 	addressRepository repository.AddressRepository
 }
 
 func NewAddressHandler(addressRepository repository.AddressRepository) AddressHandler {
-	return &addressHandler{
+	return AddressHandler{
 		addressRepository: addressRepository,
 	}
 }
@@ -47,7 +30,7 @@ func NewAddressHandler(addressRepository repository.AddressRepository) AddressHa
 // @Success 201 {object} dtos.StateResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/state [post]
-func (h *addressHandler) CreateState(c *gin.Context) {
+func (h *AddressHandler) CreateState(c *gin.Context) {
 
 	var state dtos.CreateStateDTO
 
@@ -81,7 +64,7 @@ func (h *addressHandler) CreateState(c *gin.Context) {
 // @Success 201 {object} dtos.CityResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/city [post]
-func (h *addressHandler) CreateCity(c *gin.Context) {
+func (h *AddressHandler) CreateCity(c *gin.Context) {
 
 	var city dtos.CreateCityDTO
 
@@ -123,7 +106,7 @@ func (h *addressHandler) CreateCity(c *gin.Context) {
 // @Success 201 {object} dtos.NeighborhoodResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/neighborhood [post]//
-func (h *addressHandler) CreateNeighborhood(c *gin.Context) {
+func (h *AddressHandler) CreateNeighborhood(c *gin.Context) {
 
 	var neighborhood dtos.CreateNeighborhoodDTO
 
@@ -160,7 +143,7 @@ func (h *addressHandler) CreateNeighborhood(c *gin.Context) {
 // @Success 201 {object} dtos.PlaceResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/place [post]
-func (h *addressHandler) CreatePlace(c *gin.Context) {
+func (h *AddressHandler) CreatePlace(c *gin.Context) {
 
 	var place dtos.CreatePlaceDTO
 
@@ -198,7 +181,7 @@ func (h *addressHandler) CreatePlace(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 404 {object} common_error.ErrorResponse
 // @Router /address/state/{id} [get]
-func (h *addressHandler) GetState(c *gin.Context) {
+func (h *AddressHandler) GetState(c *gin.Context) {
 
 	stateID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -226,7 +209,7 @@ func (h *addressHandler) GetState(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 404 {object} common_error.ErrorResponse
 // @Router /address/city/{id} [get]
-func (h *addressHandler) GetCity(c *gin.Context) {
+func (h *AddressHandler) GetCity(c *gin.Context) {
 
 	cityID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -253,7 +236,7 @@ func (h *addressHandler) GetCity(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 404 {object} common_error.ErrorResponse
 // @Router /address/neighborhood/{id} [get]
-func (h *addressHandler) GetNeighborhood(c *gin.Context) {
+func (h *AddressHandler) GetNeighborhood(c *gin.Context) {
 
 	neighborhoodID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -280,7 +263,7 @@ func (h *addressHandler) GetNeighborhood(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 404 {object} common_error.ErrorResponse
 // @Router /address/place/{id} [get]
-func (h *addressHandler) GetPlace(c *gin.Context) {
+func (h *AddressHandler) GetPlace(c *gin.Context) {
 
 	placeID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -310,7 +293,7 @@ func (h *addressHandler) GetPlace(c *gin.Context) {
 // @Success 200 {object} dtos.PageStateResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/state/paginated [get]
-func (h *addressHandler) GetStatePage(c *gin.Context) {
+func (h *AddressHandler) GetStatePage(c *gin.Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "15"))
@@ -342,7 +325,7 @@ func (h *addressHandler) GetStatePage(c *gin.Context) {
 // @Success 200 {object} dtos.PageCityResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/city/paginated [get]
-func (h *addressHandler) GetCityPage(c *gin.Context) {
+func (h *AddressHandler) GetCityPage(c *gin.Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "15"))
@@ -374,7 +357,7 @@ func (h *addressHandler) GetCityPage(c *gin.Context) {
 // @Success 200 {object} dtos.PageNeighborhoodResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/neighborhood/paginated [get]
-func (h *addressHandler) GetNeighborhoodPage(c *gin.Context) {
+func (h *AddressHandler) GetNeighborhoodPage(c *gin.Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "15"))
@@ -406,7 +389,7 @@ func (h *addressHandler) GetNeighborhoodPage(c *gin.Context) {
 // @Success 200 {object} dtos.PagePlaceResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /address/place/paginated [get]
-func (h *addressHandler) GetPlacePage(c *gin.Context) {
+func (h *AddressHandler) GetPlacePage(c *gin.Context) {
 
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "0"))
 	size, _ := strconv.Atoi(c.DefaultQuery("size", "15"))

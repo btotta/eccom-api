@@ -11,14 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserAddressHandler interface {
-	CreateUserAddress(c *gin.Context)
-	GetUserAddress(c *gin.Context)
-	DeleteUserAddress(c *gin.Context)
-	GetUserAddressPage(c *gin.Context)
-}
-
-type userAddressHandler struct {
+type UserAddressHandler struct {
 	userAddressRepository repository.UserAddressRepository
 	addressRepository     repository.AddressRepository
 	userRepository        repository.UserRepository
@@ -27,7 +20,7 @@ type userAddressHandler struct {
 func NewUserAddressHandler(userAddressRepository repository.UserAddressRepository,
 	addressRepository repository.AddressRepository, userRepository repository.UserRepository) UserAddressHandler {
 
-	return &userAddressHandler{
+	return UserAddressHandler{
 		userAddressRepository: userAddressRepository,
 		addressRepository:     addressRepository,
 		userRepository:        userRepository,
@@ -44,7 +37,7 @@ func NewUserAddressHandler(userAddressRepository repository.UserAddressRepositor
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 401 {object} common_error.ErrorResponse
 // @Router /user/address [post]
-func (h *userAddressHandler) CreateUserAddress(c *gin.Context) {
+func (h *UserAddressHandler) CreateUserAddress(c *gin.Context) {
 
 	email := c.GetString("email")
 	if email == "" {
@@ -117,7 +110,7 @@ func (h *userAddressHandler) CreateUserAddress(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 401 {object} common_error.ErrorResponse
 // @Router /user/address [get]
-func (h *userAddressHandler) GetUserAddress(c *gin.Context) {
+func (h *UserAddressHandler) GetUserAddress(c *gin.Context) {
 	email := c.GetString("email")
 	if email == "" {
 		common_error.DefaultErrorResponse(c, http.StatusUnauthorized, "usuario não autenticado")
@@ -155,7 +148,7 @@ func (h *userAddressHandler) GetUserAddress(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 401 {object} common_error.ErrorResponse
 // @Router /user/address [delete]
-func (h *userAddressHandler) DeleteUserAddress(c *gin.Context) {
+func (h *UserAddressHandler) DeleteUserAddress(c *gin.Context) {
 	email := c.GetString("email")
 	if email == "" {
 		common_error.DefaultErrorResponse(c, http.StatusUnauthorized, "usuario não autenticado")
@@ -202,7 +195,7 @@ func (h *userAddressHandler) DeleteUserAddress(c *gin.Context) {
 // @Failure 400 {object} common_error.ErrorResponse
 // @Failure 401 {object} common_error.ErrorResponse
 // @Router /user/address/paginated [get]
-func (h *userAddressHandler) GetUserAddressPage(c *gin.Context) {
+func (h *UserAddressHandler) GetUserAddressPage(c *gin.Context) {
 	email := c.GetString("email")
 	if email == "" {
 		common_error.DefaultErrorResponse(c, http.StatusUnauthorized, "usuario não autenticado")

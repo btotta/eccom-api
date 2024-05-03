@@ -9,17 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type HelloHandler interface {
-	Hello(c *gin.Context)
-	Health(c *gin.Context)
-}
-
-type helloHandler struct {
+type HelloHandler struct {
 	helloRepository repository.HelloRepository
 }
 
 func NewHelloHandler(helloRepository repository.HelloRepository) HelloHandler {
-	return &helloHandler{
+	return HelloHandler{
 		helloRepository: helloRepository,
 	}
 }
@@ -31,7 +26,7 @@ func NewHelloHandler(helloRepository repository.HelloRepository) HelloHandler {
 // @Produce json
 // @Success 200 {string} string "Hello World"
 // @Router / [get]
-func (h *helloHandler) Hello(c *gin.Context) {
+func (h *HelloHandler) Hello(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Hello World",
 	})
@@ -44,7 +39,7 @@ func (h *helloHandler) Hello(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} dtos.Hello
 // @Router /health [get]
-func (h *helloHandler) Health(c *gin.Context) {
+func (h *HelloHandler) Health(c *gin.Context) {
 	if err := h.helloRepository.Health(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

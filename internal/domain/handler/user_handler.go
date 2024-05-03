@@ -12,21 +12,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserHandler interface {
-	CreateUser(c *gin.Context)
-	DeleteUser(c *gin.Context)
-	GetUser(c *gin.Context)
-	LoginUser(c *gin.Context)
-	LogoutUser(c *gin.Context)
-	RefreshTokenUser(c *gin.Context)
-}
-
-type userHandler struct {
+type UserHandler struct {
 	userRepository repository.UserRepository
 }
 
 func NewUserHandler(userRepository repository.UserRepository) UserHandler {
-	return &userHandler{
+	return UserHandler{
 		userRepository: userRepository,
 	}
 }
@@ -40,7 +31,7 @@ func NewUserHandler(userRepository repository.UserRepository) UserHandler {
 // @Success 201 {object} dtos.UserResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user [post]
-func (h *userHandler) CreateUser(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var createUserDTO dtos.CreateUserDTO
 	if err := c.ShouldBindJSON(&createUserDTO); err != nil {
 		common_error.DefaultErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -75,7 +66,7 @@ func (h *userHandler) CreateUser(c *gin.Context) {
 // @Success 204
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user/{id} [delete]
-func (h *userHandler) DeleteUser(c *gin.Context) {
+func (h *UserHandler) DeleteUser(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if id == 0 || err != nil {
@@ -106,7 +97,7 @@ func (h *userHandler) DeleteUser(c *gin.Context) {
 // @Success 200 {object} dtos.UserResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user [get]
-func (h *userHandler) GetUser(c *gin.Context) {
+func (h *UserHandler) GetUser(c *gin.Context) {
 
 	email := c.GetString("email")
 	if email == "" {
@@ -132,7 +123,7 @@ func (h *userHandler) GetUser(c *gin.Context) {
 // @Success 200 {object} dtos.UserResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user/login [post]
-func (h *userHandler) LoginUser(c *gin.Context) {
+func (h *UserHandler) LoginUser(c *gin.Context) {
 
 	var userAuthDTO dtos.UserAuthDTO
 	if err := c.ShouldBindJSON(&userAuthDTO); err != nil {
@@ -175,7 +166,7 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 // @Success 200 {object} dtos.UserResponseDTO
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user/refresh [post]
-func (h *userHandler) RefreshTokenUser(c *gin.Context) {
+func (h *UserHandler) RefreshTokenUser(c *gin.Context) {
 
 	var tokens dtos.UserAuthRefreshDTO
 	if err := c.ShouldBindJSON(&tokens); err != nil {
@@ -201,7 +192,7 @@ func (h *userHandler) RefreshTokenUser(c *gin.Context) {
 // @Success 200
 // @Failure 400 {object} common_error.ErrorResponse
 // @Router /user/logout [post]
-func (h *userHandler) LogoutUser(c *gin.Context) {
+func (h *UserHandler) LogoutUser(c *gin.Context) {
 	var tokens dtos.UserAuthRefreshDTO
 	if err := c.ShouldBindJSON(&tokens); err != nil {
 		common_error.DefaultErrorResponse(c, http.StatusBadRequest, "credenciais inválidas")
